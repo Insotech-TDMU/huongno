@@ -12,7 +12,7 @@ class AppButtons {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.black,
         fixedSize: width != null ? Size(width, 45) : const Size.fromHeight(45),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),

@@ -5,6 +5,8 @@ import 'package:huongno/constant/app_colors.dart';
 import 'package:huongno/constant/app_font_size.dart';
 import 'package:huongno/screen/blocFilebook/filebook_bloc.dart';
 import 'package:huongno/screen/blocFilebook/search_filebook_page.dart';
+import 'package:huongno/screen/detail_filebook_page.dart';
+import 'package:huongno/widgets/app_button.dart';
 import 'package:huongno/widgets/app_dialog.dart';
 import 'package:huongno/widgets/master_layout.dart';
 
@@ -23,45 +25,16 @@ class _FileBookPageState extends State<FileBookPage> {
       child: MasterLayout(
         title:  Text('Hồ sơ bệnh'.toUpperCase()),
          backgroundColor: Colors.white,
-         bottomNavigationBar: Padding(
-          padding: const EdgeInsets.all(5.0),
-          child: Row(
-            children: [
-              Flexible(
-                child: InkWell(
-                  onTap: (){
-                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SearchFileBookPage()));
-                    // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:  Text('Đang làm chức năng này')));
-                  },
-                  child: Container(
-                      width: double.infinity,
-                      height: 40,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                          color: Colors.blue
-                      ),
-                      child:Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Tìm kiếm hồ sơ bệnh'.toUpperCase(),
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: Colors.white
-
-                            ),
-                          )
-                        ],
-                      )
-                  ),
-                ),
-              ),
-              const SizedBox(width: 5,),
-            ],
-          ),
-        ),
+         bottomNavigationBar: Container(
+           padding: const EdgeInsets.all(10),
+           color: Colors.white,
+           child: AppButtons.elevatedButton(
+             onPressed: () {
+               Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SearchFileBookPage()));
+             },
+             title: 'Tìm kiếm hồ sơ'.toUpperCase(),
+           ),
+         ),
         body: BlocListener<FileBookBloc,FileBookState>(
           listener: (context, state){
             if(state is FileBookLoadingState){
@@ -83,17 +56,14 @@ class _FileBookPageState extends State<FileBookPage> {
                     itemBuilder: (context, index){
                       return InkWell(
                         onTap: () async {
-                          // await Navigator.of(context).push(MaterialPageRoute(builder: (_) =>  EditCustomerPage(
-                          //   customer: state.customer[index],
-                          // ))).whenComplete(() {
-                          //   BlocProvider.of<CustomerBloc>(context).add(getAllCustomerEvent());
-                          // });
+                          Navigator.of(context).push(MaterialPageRoute(builder: (_)=> DetailFileBookPage(fileBook: state.filebook[index]!)));
+
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Container(
                               decoration: BoxDecoration(
-                                color: Colors.blue,
+                                color: Colors.lightBlue,
                                   border: Border.all(
                                     color: Colors.black,
                                   ),
@@ -114,11 +84,11 @@ class _FileBookPageState extends State<FileBookPage> {
                                         ),
                                         const SizedBox(width: 10,),
                                         Text(
-                                          state.filebook[index].id.toString(),
+                                          state.filebook[index].customer!.name!,
                                           style:const TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold,
-                                              color: Colors.yellowAccent
+                                              color: Colors.black
                                           ),
                                         ),
                                       ],
