@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:huongno/constant/app_colors.dart';
 import 'package:huongno/constant/app_font_size.dart';
+import 'package:huongno/constant/app_secure_storage.dart';
 import 'package:huongno/screen/bloc/authentication_bloc.dart';
 import 'package:huongno/screen/home_page.dart';
 import 'package:huongno/widgets/app_button.dart';
 import 'package:huongno/widgets/app_dialog.dart';
 import 'package:huongno/widgets/label_text_field.dart';
+import 'package:huongno/widgets/loading_page.dart';
 import 'package:huongno/widgets/master_layout.dart';
 
 class LoginPage extends StatefulWidget {
@@ -18,10 +21,15 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
 
+
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   bool _showPassword = true;
   final _formKey = GlobalKey<FormState>();
+
+
+
+
   @override
   Widget build(BuildContext context) {
     BuildContext alertContext = context;

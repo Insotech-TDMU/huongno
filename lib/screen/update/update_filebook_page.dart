@@ -1,13 +1,18 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:huongno/constant/app_colors.dart';
 import 'package:huongno/constant/app_font_size.dart';
+import 'package:huongno/funcition/image_cropper.dart';
 import 'package:huongno/screen/camera_page.dart';
+import 'package:huongno/screen/update/bloc/update_bloc.dart';
 import 'package:huongno/widgets/app_button.dart';
 import 'package:huongno/widgets/app_card.dart';
+import 'package:huongno/widgets/app_dialog.dart';
 import 'package:huongno/widgets/gird_image.dart';
 import 'package:huongno/widgets/master_layout.dart';
 
@@ -19,136 +24,334 @@ class UpdateFileBookPage extends StatefulWidget {
 }
 
 class _UpdateFileBookPageState extends State<UpdateFileBookPage> {
-  final ValueNotifier<List<String>> _images = ValueNotifier([]);
-   int? _idController;
+
+  final _formKey = GlobalKey<FormState>();
+  int? id;
+  String _Image1 = '';
+  String _Image2 = '';
+  String _Image3 = '';
+  final ValueNotifier<String> _personalImage = ValueNotifier('');
+  final ValueNotifier<String> _personalImage1 = ValueNotifier('');
+  final ValueNotifier<String> _personalImage2 = ValueNotifier('');
 
   @override
   void initState() {
-   _idController = widget.id;
+    id = widget.id;
     super.initState();
   }
 
-  void _callbackNavigation(List<CameraDescription> cameras) {
+
+  void _onCapture() async {
+    List<CameraDescription> cameras = await availableCameras();
+    _openCameraView(cameras);
+  }
+  void _onCapture1() async {
+    List<CameraDescription> cameras = await availableCameras();
+    _openCameraView1(cameras);
+  }
+  void _onCapture2() async {
+    List<CameraDescription> cameras = await availableCameras();
+    _openCameraView2(cameras);
+  }
+
+
+  void _openCameraView(List<CameraDescription> cameras) {
     Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => CameraPage(
+      MaterialPageRoute(builder: (_) {
+        return CameraPage(
           cameras: cameras,
-          onCaptured: (value, front) {
-            _images.value = List<String>.from(_images.value)..addAll(value);
+          normalMode: false,
+          onCaptured: (value, front) async {
+            if (value.isNotEmpty) {
+              _Image1 = '';
+              _personalImage.value = base64Encode(File(value.first).readAsBytesSync());
+            } else {
+
+            }
           },
-        ),
-      ),
+        );
+      }),
+    );
+  }
+  void _openCameraView1(List<CameraDescription> cameras) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) {
+        return CameraPage(
+          cameras: cameras,
+          normalMode: false,
+          onCaptured: (value, front) async {
+            if (value.isNotEmpty) {
+              _Image2 = '';
+              _personalImage1.value = base64Encode(File(value.first).readAsBytesSync());
+            } else {
+
+            }
+          },
+        );
+      }),
+    );
+  }
+  void _openCameraView2(List<CameraDescription> cameras) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) {
+        return CameraPage(
+          cameras: cameras,
+          normalMode: false,
+          onCaptured: (value, front) async {
+            if (value.isNotEmpty) {
+              _Image3 = '';
+              _personalImage2.value = base64Encode(File(value.first).readAsBytesSync());
+            } else {
+
+            }
+          },
+        );
+      }),
     );
   }
 
-  void _handlePersonalImage() async {
-    List<CameraDescription> cameras = await availableCameras();
-    _callbackNavigation(cameras);
+
+
+  /// [firstValue] is the current value of object
+  /// [secondValue] is the value from this page and get any change from user
+  /// if the [firstValue] is not equal with the [secondValue] so the [secondValue]
+  /// will return, and the [firstValue] if they equal.
+  dynamic _getDifferenceValue(dynamic firstValue, dynamic secondValue) {
+    return firstValue != secondValue ? secondValue : firstValue;
   }
 
   @override
   Widget build(BuildContext context) {
+    BuildContext alertContext = context;
     return MasterLayout(
-      title: const Text('Đánh giá Hoàn thành'),
-      bottomNavigationBar:  Row(
-        children: [
-          Expanded(
-            child: AppButtons.elevatedButton(
-              onPressed: () {
+      title: const Text('CẬP NHẬT HỒ SƠ BỆNH'),
+      bottomNavigationBar:
+      Container(
+        color: Colors.white,
+        padding: const EdgeInsets.all(10),
+        child: BlocProvider<UpdateBloc>(
+          create: (_) => UpdateBloc(),
+          child: BlocListener<UpdateBloc, UpdateState>(
+            listener: (context, state) {
+              if (state is UpdateLoadingState) {
+                AppDialog.showLoading(
+                  alertContext,
+                  content: 'Vui lòng chờ !',
+                );
+              }
 
+              if (state is UpdateErrorState) {
+                Navigator.pop(alertContext);
+                AppDialog.show(
+                  alertContext,
+                  title: 'Lỗi',
+                  content: 'Đã có lỗi xảy ra ',
+                  primaryButtonTitle: 'Đồng ý',
+                  onPrimaryTap: () {
+                    Navigator.pop(context);
+                  },
+                );
+              }
+
+              if (state is UpdateSuccessState) {
+                Navigator.pop(alertContext);
+                AppDialog.show(
+                  alertContext,
+                  title: 'Thành công',
+                  content: 'Cập nhật hình thành công!',
+                  primaryButtonTitle: 'Đồng ý',
+                  onPrimaryTap: () {
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  },
+                );
+              }
+            },
+            child: BlocBuilder<UpdateBloc, UpdateState>(
+              builder: (context, state) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: AppButtons.elevatedButton(
+                        onPressed: () async {
+                          BlocProvider.of<UpdateBloc>(context).add(
+                            UpdateLoadedEvent(
+                              id!,
+                              _personalImage.value,
+                              _personalImage1.value,
+                              _personalImage2.value,
+                            ),
+                          );
+                        },
+                        title:'Đăng nhập'.toUpperCase(),
+                      ),
+                    ),
+                  ],
+                );
               },
-              title: 'Gửi đánh giá & Kết thúc đơn',
             ),
           ),
-        ],
+        ),
       ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-
-            const SizedBox(
-              height: 10,
-            ),
-            const Divider(),
             AppCard(
               child: Column(
-                children: [
-                  const Text(
-                    'Bác sĩ lưu ý chụp chuẩn xác để trong quá trình cập nhật cũng như xem lại không để xảy ra lỗi hoặc xem lại'
-                        ' không bị nhoè hình !',
-                    style: TextStyle(
-                      fontSize: AppFontSize.medium,
-                      fontWeight: FontWeight.bold,
-                    ),
+                children:const [
+                  Divider(color: Colors.black,indent: 10,endIndent: 10,),
+                  Text(
+                    'Quý khách hàng vui lòng chụp ảnh về quang cảnh nơi CTV đã làm việc để làm cơ sở đánh giá '
+                        'và hỗ trợ khách hàng tốt hơn ở các đơn hàng tiếp theo (tối thiểu 1 ảnh).',
                   ),
-                  const Center(
-                    child :Text(
-                      'Cảm ơn !',
-                    style: TextStyle(
-                      fontSize: AppFontSize.medium,
-                      fontWeight: FontWeight.bold,
+                  Divider(color: Colors.black,indent: 10,endIndent: 10,),
 
-                    )
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: AppButtons.outlinedButton(
-                      title: 'Chụp ảnh',
-                      onPressed: () {
-                        _handlePersonalImage();
-                      },
-                    ),
-                  ),
                 ],
               ),
             ),
-            Container(
-              margin: const EdgeInsets.only(top: 15, bottom: 10),
-              child: const Text(
-                'Ảnh đã chụp',
-              ),
-            ),
-            SizedBox(
-              width: double.infinity,
-              height: 200,
-              child: ValueListenableBuilder(
-                valueListenable: _images,
-                builder: (_, __, ___) {
-                  return GridView.count(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 4.0,
-                    mainAxisSpacing: 8.0,
-                    childAspectRatio: 3 / 4,
-                    children: List.generate(
-                      _images.value.length,
-                          (index) => Stack(
-                        children: [
-                          GridImageCard(
-                            imagePath: _images.value[index],
-                          ),
-                          Align(
-                            alignment: Alignment.topRight,
-                            child: IconButton(
-                              icon: const Icon(Icons.remove_circle_outline_rounded),
-                              color: AppColor.secondary,
-                              onPressed: () {
-                                _images.value = List<String>.from(_images.value)..removeAt(index);
-                              },
-                            ),
-                          )
-                        ],
+            const SizedBox(height: 20,),
+
+            Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Flexible(
+                  fit: FlexFit.tight,
+                  child:Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ValueListenableBuilder(
+                          valueListenable: _personalImage,
+                          builder: (_, __, ___) {
+                            return InkWell(
+                              onTap: () => _onCapture(),
+                              child: _Image1.isNotEmpty
+                                  ?
+                              SizedBox(
+                                height: 200.0,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  child: Image.memory(
+                                    base64Decode(_Image1),
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                              )
+                                  : _personalImage.value.isNotEmpty
+                                  ?
+                              SizedBox(
+                                height: 200.0,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  child: Image.memory(
+                                    base64Decode(_personalImage.value),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              )
+                                  : CircleAvatar(
+                                radius: 50,
+                                backgroundColor: AppColor.lightGrey.withOpacity(0.5),
+                                child: const Icon(
+                                  Icons.camera_alt_rounded,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            );
+                          }
                       ),
-                    ),
-                  );
-                },
-              ),
-            ),
+                      const SizedBox(width: 20,),
+                      ValueListenableBuilder(
+                          valueListenable: _personalImage1,
+                          builder: (_, __, ___) {
+                            return InkWell(
+                              onTap: () => _onCapture1(),
+                              child: _Image2.isNotEmpty
+                                  ?
+                              SizedBox(
+                                height: 200.0,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  child: Image.memory(
+                                    base64Decode(_Image2),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              )
+                                  : _personalImage1.value.isNotEmpty
+                                  ?
+                              SizedBox(
+                                height: 200.0,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  child: Image.memory(
+                                    base64Decode(_personalImage1.value),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              )
+                                  : CircleAvatar(
+                                radius: 50,
+                                backgroundColor: AppColor.lightGrey.withOpacity(0.5),
+                                child: const Icon(
+                                  Icons.camera_alt_rounded,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            );
+                          }
+                      ),
+                      const SizedBox(width: 20,),
+                      // ValueListenableBuilder(
+                      //     valueListenable: _personalImage2,
+                      //     builder: (_, __, ___) {
+                      //       return InkWell(
+                      //         onTap: () => _onCapture2(),
+                      //         child: _Image3.isNotEmpty
+                      //             ?
+                      //         SizedBox(
+                      //           height: 200.0,
+                      //           child: ClipRRect(
+                      //             borderRadius: BorderRadius.circular(15.0),
+                      //             child: Image.memory(
+                      //               base64Decode(_Image3),
+                      //               fit: BoxFit.cover,
+                      //             ),
+                      //           ),
+                      //         )
+                      //             : _personalImage2.value.isNotEmpty
+                      //             ?
+                      //         SizedBox(
+                      //           height: 200.0,
+                      //           child: ClipRRect(
+                      //             borderRadius: BorderRadius.circular(15.0),
+                      //             child: Image.memory(
+                      //               base64Decode(_personalImage2.value),
+                      //               fit: BoxFit.cover,
+                      //             ),
+                      //           ),
+                      //         )
+                      //             : CircleAvatar(
+                      //           radius: 50,
+                      //           backgroundColor: AppColor.lightGrey.withOpacity(0.5),
+                      //           child: const Icon(
+                      //             Icons.camera_alt_rounded,
+                      //             color: Colors.grey,
+                      //           ),
+                      //         ),
+                      //       );
+                      //     }
+                      // ),
+                    ],
+                  ),
+                )
+            )
           ],
         ),
       ),

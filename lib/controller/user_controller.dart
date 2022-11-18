@@ -19,4 +19,18 @@ class UserController{
       rethrow;
     }
   }
+  Future<void> logout() async {
+    try {
+      await _userData.logout();
+    } on DioError catch (ex) {
+      if (ex.response != null) {
+        throw ex.response!.statusCode.toString();
+      } else {
+        throw 'AppErrorCode.serverUnreachable';
+      }
+    } catch (ex) {
+      rethrow;
+    }
+  }
+
 }

@@ -12,6 +12,7 @@ part 'authentication_state.dart';
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState>{
   AuthenticationBloc() : super(const AuthenticationLoading()) {
     on<GetLoginAccountEvent>(_onLoginUser);
+    on<LogoutAccountEvent>(_onLogoutAccount);
 
   }
 
@@ -29,8 +30,22 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState>{
         event.password,
       );
       await AppStorage.saveUserAuthentication(user);
-
       emit(AuthenticationSuccess(user));
+    } catch (ex) {
+      emit(AuthenticationError(ex.toString()));
+    }
+  }
+
+  void _onLogoutAccount(
+      LogoutAccountEvent event,
+      Emitter<AuthenticationState> emit,
+      ) async {
+    emit(const AuthenticationLoading());
+
+    try {
+      await _userController.logout();
+      await AppStorage.clearUser();
+      emit(const LogOutSuccess());
     } catch (ex) {
       emit(AuthenticationError(ex.toString()));
     }

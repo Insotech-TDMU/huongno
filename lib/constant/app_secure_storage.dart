@@ -11,6 +11,9 @@ class AppStorage {
   static const _storage = FlutterSecureStorage();
 
 
+  static Future<void> clearUser() async {
+    await _storage.deleteAll();
+  }
   static Future<void> saveUserAuthentication(User userModel) async {
     if (userModel.token != null) {
       await _storage.write(key: 'token', value: userModel.token);

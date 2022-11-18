@@ -21,7 +21,7 @@ class _FileBookPageState extends State<FileBookPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => FileBookBloc()..add(getAllFileBookEvent()),
+      create: (_) => FileBookBloc()..add(const getAllFileBookEvent()),
       child: MasterLayout(
         title:  Text('Hồ sơ bệnh'.toUpperCase()),
          backgroundColor: Colors.white,
@@ -72,6 +72,7 @@ class _FileBookPageState extends State<FileBookPage> {
                               child: Padding(
                                 padding: const EdgeInsets.all(10.0),
                                 child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
                                       children: [
@@ -162,13 +163,36 @@ class _FileBookPageState extends State<FileBookPage> {
                                         const Text(
                                           'Ngày giờ khám  :',
                                           style: TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.white
+                                              fontSize: 16,
+                                              color: Colors.white
                                           ),
                                         ),
                                         const SizedBox(width: 10,),
                                         Text(
                                           state.filebook[index].datetime!,
+                                          style:const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.yellowAccent
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 5,),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          'Phát đồ điều trị :',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.white
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10,),
+                                        for(var el in state.filebook[index].bill!.billinfo)
+                                      Text(
+                                          '-   ${el.productname}',
                                           style:const TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold,

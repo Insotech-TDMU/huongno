@@ -1,4 +1,5 @@
 
+import 'package:dio/dio.dart';
 import 'package:huongno/data/filebook_data.dart';
 import 'package:huongno/model/filebook.dart';
 
@@ -28,6 +29,21 @@ class FileBookController{
       print(ex.toString());
     }
     throw '';
+  }
+
+  Future<void> updateFileBook(int id,String image1, String image2, String image3) async{
+    try{
+      await _briefData.updateFileBook(id,image1, image2,image3);
+    } on DioError catch (ex){
+      if(ex.response != null){
+        throw ex.response!.statusCode.toString();
+      }
+      else{
+        throw 'Error !';
+      }
+    }catch (ex, t){
+      rethrow;
+    }
   }
 
 }

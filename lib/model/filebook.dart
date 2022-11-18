@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:huongno/model/animal.dart';
+import 'package:huongno/model/bill.dart';
 import 'package:huongno/model/customer.dart';
 import 'package:huongno/model/doctor.dart';
 
@@ -25,6 +26,7 @@ class FileBook{
   final Customer? customer;
   final Animal? animal;
   final Doctor? doctor;
+  final Bill? bill;
 
   FileBook({
     this.id,
@@ -46,7 +48,8 @@ class FileBook{
     this.updateAt,
     this.customer,
     this.animal,
-    this.doctor
+    this.doctor,
+    this.bill,
 });
 
   FileBook copyWith({
@@ -70,6 +73,7 @@ class FileBook{
     Customer? customer,
     Animal? animal,
     Doctor? doctor,
+    Bill? bill,
 
 }) {
     return FileBook(
@@ -93,6 +97,7 @@ class FileBook{
       customer: customer ?? this.customer,
       animal: animal ?? this.animal,
       doctor: doctor ?? this.doctor,
+      bill: bill ?? this.bill
     );
   }
 
@@ -140,6 +145,7 @@ class FileBook{
       customer: Customer.fromMap(map['customer'] ?? {}),
       animal: Animal.fromMap(map['animal'] ?? {}),
       doctor:Doctor.fromMap(map['doctor'] ?? {}),
+      bill: Bill.fromMap(map['bill'] ?? {}),
     );
   }
 
