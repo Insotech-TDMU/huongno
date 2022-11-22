@@ -7,13 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:huongno/constant/app_colors.dart';
 import 'package:huongno/constant/app_font_size.dart';
-import 'package:huongno/funcition/image_cropper.dart';
+import 'package:huongno/main.dart';
 import 'package:huongno/screen/camera_page.dart';
+import 'package:huongno/screen/home_page.dart';
 import 'package:huongno/screen/update/bloc/update_bloc.dart';
 import 'package:huongno/widgets/app_button.dart';
 import 'package:huongno/widgets/app_card.dart';
 import 'package:huongno/widgets/app_dialog.dart';
-import 'package:huongno/widgets/gird_image.dart';
 import 'package:huongno/widgets/master_layout.dart';
 
 import '../../model/filebook.dart';
@@ -116,14 +116,6 @@ class _UpdateFileBookPageState extends State<UpdateFileBookPage> {
 
 
 
-  /// [firstValue] is the current value of object
-  /// [secondValue] is the value from this page and get any change from user
-  /// if the [firstValue] is not equal with the [secondValue] so the [secondValue]
-  /// will return, and the [firstValue] if they equal.
-  dynamic _getDifferenceValue(dynamic firstValue, dynamic secondValue) {
-    return firstValue != secondValue ? secondValue : firstValue;
-  }
-
   @override
   Widget build(BuildContext context) {
     BuildContext alertContext = context;
@@ -166,7 +158,7 @@ class _UpdateFileBookPageState extends State<UpdateFileBookPage> {
                   primaryButtonTitle: 'Đồng ý',
                   onPrimaryTap: () {
                     Navigator.pop(context);
-                    Navigator.pop(context);
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const HomePage()));
                   },
                 );
               }
@@ -182,7 +174,8 @@ class _UpdateFileBookPageState extends State<UpdateFileBookPage> {
                     Expanded(
                       child: AppButtons.elevatedButton(
                         onPressed: () async {
-                          BlocProvider.of<UpdateBloc>(context).add(
+                          if(_personalImage.value.isNotEmpty || _personalImage1.value.isNotEmpty) {
+                            BlocProvider.of<UpdateBloc>(context).add(
                             UpdateLoadedEvent(
                               id!,
                               _personalImage.value,
@@ -190,8 +183,25 @@ class _UpdateFileBookPageState extends State<UpdateFileBookPage> {
                               _personalImage2.value,
                             ),
                           );
+                          }
+                          else{
+                            String content = '';
+
+                            if (_personalImage.value.isEmpty || _personalImage1.value.isEmpty) {
+                              content += 'Vui lòng chụp ảnh để cập nhật';
+                              content += ' ';
+                            }AppDialog.show(
+                              context,
+                              title: 'Cảnh báo',
+                              content: content,
+                              primaryButtonTitle: 'Đồng ý',
+                              onPrimaryTap: () {
+                                Navigator.pop(context);
+                              },
+                            );
+                          }
                         },
-                        title:'Đăng nhập'.toUpperCase(),
+                        title:'Cập nhật'.toUpperCase(),
                       ),
                     ),
                   ],
@@ -201,15 +211,15 @@ class _UpdateFileBookPageState extends State<UpdateFileBookPage> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
+      body: Form(
+        key: _formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             AppCard(
               child: Column(
-                children: [
+                children:const [
                   Divider(color: Colors.black,indent: 10,endIndent: 10),
                   SizedBox(
                     width: 350,
@@ -233,10 +243,10 @@ class _UpdateFileBookPageState extends State<UpdateFileBookPage> {
             AppCard(
               child: Column(
                 children: [
-                  Text('Tên khách hàng',style: TextStyle(
+                  const Text('Tên khách hàng',style: TextStyle(
                     fontSize: AppFontSize.medium, fontWeight: FontWeight.bold,
                   ),),
-                  Divider(color: Colors.black,indent: 10,endIndent: 10,),
+                  const Divider(color: Colors.black,indent: 10,endIndent: 10,),
                   SizedBox(
                     width: 350,
                     child:Container(
@@ -247,7 +257,7 @@ class _UpdateFileBookPageState extends State<UpdateFileBookPage> {
                       ),
                       child: Text(
                         name!,
-                        style: TextStyle(
+                        style:const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: AppFontSize.medium,
                             color: Colors.black
@@ -256,147 +266,101 @@ class _UpdateFileBookPageState extends State<UpdateFileBookPage> {
                     ),
                   ),
 
-                  Divider(color: Colors.black,indent: 10,endIndent: 10,),
+                  const Divider(color: Colors.black,indent: 10,endIndent: 10,),
 
                 ],
               ),
             ),
-
             const SizedBox(height: 20,),
-
             Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: Flexible(
-                  fit: FlexFit.tight,
-                  child:Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ValueListenableBuilder(
-                          valueListenable: _personalImage,
-                          builder: (_, __, ___) {
-                            return InkWell(
-                              onTap: () => _onCapture(),
-                              child: _Image1.isNotEmpty
-                                  ?
-                              SizedBox(
-                                height: 200.0,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                  child: Image.memory(
-                                    base64Decode(_Image1),
-                                    fit: BoxFit.fill,
-                                  ),
-                                ),
-                              )
-                                  : _personalImage.value.isNotEmpty
-                                  ?
-                              SizedBox(
-                                height: 200.0,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                  child: Image.memory(
-                                    base64Decode(_personalImage.value),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              )
-                                  : CircleAvatar(
-                                radius: 50,
-                                backgroundColor: AppColor.lightGrey.withOpacity(0.5),
-                                child: const Icon(
-                                  Icons.camera_alt_rounded,
-                                  color: Colors.grey,
+                child:Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ValueListenableBuilder(
+                        valueListenable: _personalImage,
+                        builder: (_, __, ___) {
+                          return InkWell(
+                            onTap: () => _onCapture(),
+                            child: _Image1.isNotEmpty
+                                ?
+                            SizedBox(
+                              height: 200.0,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(15.0),
+                                child: Image.memory(
+                                  base64Decode(_Image1),
+                                  fit: BoxFit.fill,
                                 ),
                               ),
-                            );
-                          }
-                      ),
-                      const SizedBox(width: 20,),
-                      ValueListenableBuilder(
-                          valueListenable: _personalImage1,
-                          builder: (_, __, ___) {
-                            return InkWell(
-                              onTap: () => _onCapture1(),
-                              child: _Image2.isNotEmpty
-                                  ?
-                              SizedBox(
-                                height: 200.0,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                  child: Image.memory(
-                                    base64Decode(_Image2),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              )
-                                  : _personalImage1.value.isNotEmpty
-                                  ?
-                              SizedBox(
-                                height: 200.0,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                  child: Image.memory(
-                                    base64Decode(_personalImage1.value),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              )
-                                  : CircleAvatar(
-                                radius: 50,
-                                backgroundColor: AppColor.lightGrey.withOpacity(0.5),
-                                child: const Icon(
-                                  Icons.camera_alt_rounded,
-                                  color: Colors.grey,
+                            )
+                                : _personalImage.value.isNotEmpty
+                                ?
+                            SizedBox(
+                              height: 200.0,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(15.0),
+                                child: Image.memory(
+                                  base64Decode(_personalImage.value),
+                                  fit: BoxFit.cover,
                                 ),
                               ),
-                            );
-                          }
-                      ),
-                      const SizedBox(width: 20,),
-                      // ValueListenableBuilder(
-                      //     valueListenable: _personalImage2,
-                      //     builder: (_, __, ___) {
-                      //       return InkWell(
-                      //         onTap: () => _onCapture2(),
-                      //         child: _Image3.isNotEmpty
-                      //             ?
-                      //         SizedBox(
-                      //           height: 200.0,
-                      //           child: ClipRRect(
-                      //             borderRadius: BorderRadius.circular(15.0),
-                      //             child: Image.memory(
-                      //               base64Decode(_Image3),
-                      //               fit: BoxFit.cover,
-                      //             ),
-                      //           ),
-                      //         )
-                      //             : _personalImage2.value.isNotEmpty
-                      //             ?
-                      //         SizedBox(
-                      //           height: 200.0,
-                      //           child: ClipRRect(
-                      //             borderRadius: BorderRadius.circular(15.0),
-                      //             child: Image.memory(
-                      //               base64Decode(_personalImage2.value),
-                      //               fit: BoxFit.cover,
-                      //             ),
-                      //           ),
-                      //         )
-                      //             : CircleAvatar(
-                      //           radius: 50,
-                      //           backgroundColor: AppColor.lightGrey.withOpacity(0.5),
-                      //           child: const Icon(
-                      //             Icons.camera_alt_rounded,
-                      //             color: Colors.grey,
-                      //           ),
-                      //         ),
-                      //       );
-                      //     }
-                      // ),
-                    ],
-                  ),
-                )
+                            )
+                                : CircleAvatar(
+                              radius: 50,
+                              backgroundColor: AppColor.lightGrey.withOpacity(0.5),
+                              child: const Icon(
+                                Icons.camera_alt_rounded,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          );
+                        }
+                    ),
+                    const SizedBox(width: 20,),
+                    ValueListenableBuilder(
+                        valueListenable: _personalImage1,
+                        builder: (_, __, ___) {
+                          return InkWell(
+                            onTap: () => _onCapture1(),
+                            child: _Image2.isNotEmpty
+                                ?
+                            SizedBox(
+                              height: 200.0,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(15.0),
+                                child: Image.memory(
+                                  base64Decode(_Image2),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            )
+                                : _personalImage1.value.isNotEmpty
+                                ?
+                            SizedBox(
+                              height: 200.0,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(15.0),
+                                child: Image.memory(
+                                  base64Decode(_personalImage1.value),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            )
+                                : CircleAvatar(
+                              radius: 50,
+                              backgroundColor: AppColor.lightGrey.withOpacity(0.5),
+                              child: const Icon(
+                                Icons.camera_alt_rounded,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          );
+                        }
+                    ),
+                  ],
+                ),
             )
           ],
         ),

@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:huongno/constant/app_font_size.dart';
-import 'package:huongno/constant/app_secure_storage.dart';
-import 'package:huongno/screen/bloc/authentication_bloc.dart';
+import 'package:huongno/main.dart';
 import 'package:huongno/screen/detail_checkout_page.dart';
 import 'package:huongno/screen/filebook_page.dart';
-import 'package:huongno/screen/login_page.dart';
 import 'package:huongno/screen/logout/logout_bloc.dart';
 import 'package:huongno/screen/logout/logout_event.dart';
 import 'package:huongno/screen/logout/logout_state.dart';
 import 'package:huongno/widgets/app_button.dart';
 import 'package:huongno/widgets/app_dialog.dart';
 import 'package:huongno/widgets/loading_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -30,7 +26,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     BuildContext alertContext = context;
-    double width = MediaQuery.of(context).size.width;
 
     return Scaffold(
       appBar: AppBar(
@@ -134,7 +129,7 @@ class _HomePageState extends State<HomePage> {
                           primaryButtonTitle: 'Đồng ý',
                           onPrimaryTap: () {
                             Navigator.pop(context);
-                            Navigator.of(context).push(MaterialPageRoute(builder: (_) => const LoginPage()));
+                            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const MyApp()));
                           },
                         );
                       }
@@ -179,7 +174,7 @@ class _HomePageState extends State<HomePage> {
             Center(
                 child:InkWell(
                   onTap: (){
-                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => const DetailCheckoutPage()));
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const DetailCheckoutPage()));
                   },
                   child:  Container(
                     // height: MediaQuery.of(context).size.height * 1 / 10,

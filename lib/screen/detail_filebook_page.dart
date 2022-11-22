@@ -1,13 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:full_screen_image_null_safe/full_screen_image_null_safe.dart';
 import 'package:huongno/constant/app_font_size.dart';
 import 'package:huongno/model/filebook.dart';
 import 'package:huongno/widgets/master_layout.dart';
-import 'package:photo_view/photo_view.dart';
-import 'package:zoom_pinch_overlay/zoom_pinch_overlay.dart';
-
 class DetailFileBookPage extends StatefulWidget {
   const DetailFileBookPage({Key? key, required this.fileBook}) : super(key: key);
   final FileBook? fileBook;
@@ -164,20 +160,20 @@ class _DetailFileBookPageState extends State<DetailFileBookPage> {
                             ),
                           ),
                           const SizedBox(height: 20,),
-                          SizedBox(
+                            SizedBox(
                             height: 300,
                             width: 400,
                             child: InteractiveViewer(
                                 panEnabled: false, // Set it to false
-                                boundaryMargin: EdgeInsets.all(100),
+                                boundaryMargin:const EdgeInsets.all(100),
                                 minScale: 0.5,
                                 maxScale: 2,
-                                child: Image.network('https://datlich.thuybinhduong.com/storage/Image/' + _image1!,
+                                child: Image.network('https://datlich.thuybinhduong.com/storage/Image/${_image1!}',
                                   width: 200,
                                   height: 200,
                                   fit: BoxFit.cover,
                                 )
-                            ),
+                            ) ,
 
                           ),
                           const SizedBox(height: 5,),
@@ -189,7 +185,7 @@ class _DetailFileBookPageState extends State<DetailFileBookPage> {
                                 boundaryMargin: EdgeInsets.all(100),
                                 minScale: 0.5,
                                 maxScale: 2,
-                                child: Image.network('https://datlich.thuybinhduong.com/storage/Image/' + _image2!,
+                                child: Image.network('https://datlich.thuybinhduong.com/storage/Image/${_image2!}',
                                   width: 200,
                                   height: 200,
                                   fit: BoxFit.cover,
