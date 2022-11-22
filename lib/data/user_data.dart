@@ -34,8 +34,13 @@ class UserData extends DioBase{
         }
         )
     );
+    print(response.data);
     if(response.statusCode == 200){
-      return response.data[1]['contents'];
+      if (response.data['status'] == 200) {
+        return response.data;
+      } else {
+        throw (response.data['status']);
+      }
     }
     throw response.statusMessage ?? 'Exception';
 

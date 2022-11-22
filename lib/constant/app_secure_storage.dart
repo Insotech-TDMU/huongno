@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:huongno/model/user.dart';
@@ -9,6 +8,7 @@ class AppStorage {
   AppStorage._();
 
   static const _storage = FlutterSecureStorage();
+  static late SharedPreferences _sharedPreferences;
 
 
   static Future<void> clearUser() async {
@@ -27,7 +27,12 @@ class AppStorage {
     return token ?? 'NO_TOKEN';
   }
 
-
+  static Future<void> checkFirstRun() async {
+    if (_sharedPreferences.getBool('FirstRun') ?? true) {
+      await AppStorage.clearUser();
+      await _sharedPreferences.setBool('FirstRun', false);
+    }
+  }
   static Future<User> getUserInfo() async {
     final id = await _storage.read(key: 'userId');
     return User(

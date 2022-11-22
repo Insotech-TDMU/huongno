@@ -5,8 +5,11 @@ import 'package:huongno/constant/app_font_size.dart';
 import 'package:huongno/constant/app_secure_storage.dart';
 import 'package:huongno/screen/bloc/authentication_bloc.dart';
 import 'package:huongno/screen/detail_checkout_page.dart';
-import 'package:huongno/screen/file_book_page.dart';
+import 'package:huongno/screen/filebook_page.dart';
 import 'package:huongno/screen/login_page.dart';
+import 'package:huongno/screen/logout/logout_bloc.dart';
+import 'package:huongno/screen/logout/logout_event.dart';
+import 'package:huongno/screen/logout/logout_state.dart';
 import 'package:huongno/widgets/app_button.dart';
 import 'package:huongno/widgets/app_dialog.dart';
 import 'package:huongno/widgets/loading_page.dart';
@@ -23,35 +26,148 @@ class _HomePageState extends State<HomePage> {
 
   String? title;
   Widget page = const LoadingPage();
-  final storage = const FlutterSecureStorage();
-
-  @override
-  void initState() {
-    super.initState();
-    checkLogin();
-  }
-  void checkLogin() async {
-    String token = await AppStorage.getUserToken();
-    if (token != null) {
-      setState(() {
-        page = const HomePage();
-      });
-    } else {
-      setState(() {
-        page = const LoginPage();
-      });
-    }
-  }
-
 
   @override
   Widget build(BuildContext context) {
+    BuildContext alertContext = context;
     double width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         title:  Text('TRang chủ'.toUpperCase()),
         centerTitle: true,
       ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text(
+                'PHÒNG KHÁM THÚ Y HƯƠNG NỞ',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 25,
+                  color: Colors.white
+                ),
+              ),
+            ),
+            ListTile(
+              title: const Text(
+                '         TẬN TÂM',
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.red
+                ),
+              ),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+              },
+            ),
+            ListTile(
+              title: const Text(
+                '         TẬN TỤY',
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.red
+                ),
+              ),
+              onTap: () {
+              },
+            ),
+            ListTile(
+              title: const Text(
+                '         TẬN TÌNH',
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.red
+                ),
+              ),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+              },
+            ),
+            const SizedBox(height: 50,),
+            ListTile(
+              title: Container(
+                width: 150,
+                color: Colors.white,
+                padding: const EdgeInsets.all(10),
+                child: BlocProvider<LogoutBloc>(
+                  create: (_) => LogoutBloc(),
+                  child: BlocListener<LogoutBloc, LogOutState>(
+                    listener: (context, state) {
+                      if (state is LogOutLoadingState) {
+                        AppDialog.showLoading(
+                          alertContext,
+                          content: 'Vui lòng chờ !',
+                        );
+                      }
+
+                      if (state is LogOutErrorState) {
+                        print(state.errorMessage);
+                        Navigator.pop(alertContext);
+                        AppDialog.show(
+                          alertContext,
+                          title: 'Lỗi',
+                          content: 'Đã có lỗi xảy ra ',
+                          primaryButtonTitle: 'Đồng ý',
+                          onPrimaryTap: () {
+                            Navigator.pop(context);
+                          },
+                        );
+                      }
+
+                      if (state is LogOutSuccess) {
+                        Navigator.pop(alertContext);
+                        AppDialog.show(
+                          alertContext,
+                          title: 'Thành công',
+                          content: 'Đăng xuất thành công',
+                          primaryButtonTitle: 'Đồng ý',
+                          onPrimaryTap: () {
+                            Navigator.pop(context);
+                            Navigator.of(context).push(MaterialPageRoute(builder: (_) => const LoginPage()));
+                          },
+                        );
+                      }
+                    },
+                    child: BlocBuilder<LogoutBloc, LogOutState>(
+                      builder: (context, state) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Expanded(
+                              child: AppButtons.elevatedButton(
+                                onPressed: () async {
+                                  BlocProvider.of<LogoutBloc>(context).add(
+                                      const LogOutLoadedEvent());
+                                },
+                                title:'Đăng xuất'.toUpperCase(),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -151,9 +267,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                 )
             ),
-
-            const SizedBox(height: 30,),
-
 
           ],
         ),

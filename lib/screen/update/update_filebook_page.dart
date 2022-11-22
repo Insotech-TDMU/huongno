@@ -16,9 +16,11 @@ import 'package:huongno/widgets/app_dialog.dart';
 import 'package:huongno/widgets/gird_image.dart';
 import 'package:huongno/widgets/master_layout.dart';
 
+import '../../model/filebook.dart';
+
 class UpdateFileBookPage extends StatefulWidget {
-  UpdateFileBookPage({Key? key, required this.id}) : super(key: key);
-  late  int? id;
+  UpdateFileBookPage({Key? key, required this.fileBook}) : super(key: key);
+  late  FileBook? fileBook;
   @override
   State<UpdateFileBookPage> createState() => _UpdateFileBookPageState();
 }
@@ -26,6 +28,7 @@ class UpdateFileBookPage extends StatefulWidget {
 class _UpdateFileBookPageState extends State<UpdateFileBookPage> {
 
   final _formKey = GlobalKey<FormState>();
+  late  String name;
   int? id;
   String _Image1 = '';
   String _Image2 = '';
@@ -36,7 +39,8 @@ class _UpdateFileBookPageState extends State<UpdateFileBookPage> {
 
   @override
   void initState() {
-    id = widget.id;
+    id = widget.fileBook!.id;
+    name = widget.fileBook!.customer!.name!;
     super.initState();
   }
 
@@ -205,17 +209,59 @@ class _UpdateFileBookPageState extends State<UpdateFileBookPage> {
           children: [
             AppCard(
               child: Column(
-                children:const [
-                  Divider(color: Colors.black,indent: 10,endIndent: 10,),
-                  Text(
-                    'Quý khách hàng vui lòng chụp ảnh về quang cảnh nơi CTV đã làm việc để làm cơ sở đánh giá '
-                        'và hỗ trợ khách hàng tốt hơn ở các đơn hàng tiếp theo (tối thiểu 1 ảnh).',
+                children: [
+                  Divider(color: Colors.black,indent: 10,endIndent: 10),
+                  SizedBox(
+                    width: 350,
+                    child: Text(
+                      'Bác sĩ lưu ý chụp hình cho rõ nét và canh chỉnh đúng tỉ lệ trong qua trình chụp ! '
+                          'để khi xem lại hình ảnh không bị nhoè và mất chữ ! '
+                          '\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tCẢM ƠN',
+                      style: TextStyle(
+                        fontSize: AppFontSize.medium,
+                        fontWeight: FontWeight.bold,
+
+                      ),
+                    ),
                   ),
+
                   Divider(color: Colors.black,indent: 10,endIndent: 10,),
 
                 ],
               ),
             ),
+            AppCard(
+              child: Column(
+                children: [
+                  Text('Tên khách hàng',style: TextStyle(
+                    fontSize: AppFontSize.medium, fontWeight: FontWeight.bold,
+                  ),),
+                  Divider(color: Colors.black,indent: 10,endIndent: 10,),
+                  SizedBox(
+                    width: 350,
+                    child:Container(
+                      width: double.infinity,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                      child: Text(
+                        name!,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: AppFontSize.medium,
+                            color: Colors.black
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  Divider(color: Colors.black,indent: 10,endIndent: 10,),
+
+                ],
+              ),
+            ),
+
             const SizedBox(height: 20,),
 
             Padding(

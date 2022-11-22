@@ -3,18 +3,21 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:huongno/controller/filebook_controller.dart';
 import 'package:huongno/model/filebook.dart';
+import 'package:huongno/screen/blocFilebook/search_filebook_page.dart';
+import 'package:huongno/screen/detail_filebook_page.dart';
 import 'package:huongno/screen/update/update_filebook_page.dart';
+import 'package:huongno/widgets/app_button.dart';
 import 'package:huongno/widgets/master_layout.dart';
 import 'package:huongno/widgets/search_widget.dart';
 
-class SearchFileBookPage extends StatefulWidget {
-  const SearchFileBookPage({Key? key}) : super(key: key);
+class FileBookPage extends StatefulWidget {
+  const FileBookPage({Key? key}) : super(key: key);
 
   @override
-  State<SearchFileBookPage> createState() => _SearchFileBookPageState();
+  State<FileBookPage> createState() => _FileBookPageState();
 }
 
-class _SearchFileBookPageState extends State<SearchFileBookPage> {
+class _FileBookPageState extends State<FileBookPage> {
 
   final FileBookController _customerController = FileBookController();
   String query = '';
@@ -55,8 +58,18 @@ class _SearchFileBookPageState extends State<SearchFileBookPage> {
   @override
   Widget build(BuildContext context) {
     return MasterLayout(
-      title:  Text('Tìm kiếm và cập nhật hồ sơ'.toUpperCase()),
+      title:  Text('Hồ sơ bệnh'.toUpperCase()),
       backgroundColor: Colors.white,
+      bottomNavigationBar: Container(
+           padding: const EdgeInsets.all(10),
+           color: Colors.white,
+           child: AppButtons.elevatedButton(
+             onPressed: () {
+               Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SearchFileBookPage()));
+             },
+             title: 'Tìm kiếm và cập nhật hồ sơ'.toUpperCase(),
+           ),
+         ),
       body: Column(
         children: [
           buildSearch(),
@@ -92,11 +105,11 @@ class _SearchFileBookPageState extends State<SearchFileBookPage> {
   Widget buildCustomer(FileBook fileBook) => ListTile(
       title: InkWell(
         onTap: (){
-          Navigator.of(context).push(MaterialPageRoute(builder: (_) => UpdateFileBookPage(fileBook: fileBook!)));
+          Navigator.of(context).push(MaterialPageRoute(builder: (_) => DetailFileBookPage(fileBook: fileBook)));
         },
         child: Container(
             decoration: BoxDecoration(
-              color: Colors.blue,
+                color: Colors.blue,
                 border: Border.all(
                   color: Colors.blue,
                 ),
@@ -111,8 +124,8 @@ class _SearchFileBookPageState extends State<SearchFileBookPage> {
                       const Text(
                         'Tên khách hàng  :',
                         style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white
+                            fontSize: 16,
+                            color: Colors.white
                         ),
                       ),
                       const SizedBox(width: 10,),
@@ -121,7 +134,7 @@ class _SearchFileBookPageState extends State<SearchFileBookPage> {
                         style:const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                          color: Colors.yellow
+                            color: Colors.yellow
                         ),
                       ),
                     ],
@@ -151,21 +164,21 @@ class _SearchFileBookPageState extends State<SearchFileBookPage> {
                   Row(
                     children: [
                       const Text(
-                        'Tên khách hàng  :',
+                        'Tên thú cưng  :',
                         style: TextStyle(
                             fontSize: 16,
                             color: Colors.white
                         ),
                       ),
                       const SizedBox(width: 10,),
-                        Text(
-                         fileBook.animal!.nameAnimal!,
-                          style:const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.yellow
-                          ),
+                      Text(
+                        fileBook.animal!.nameAnimal!,
+                        style:const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.yellow
                         ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 5,),
@@ -179,35 +192,35 @@ class _SearchFileBookPageState extends State<SearchFileBookPage> {
                         ),
                       ),
                       const SizedBox(width: 10,),
-                        Text(
-                          fileBook.doctor!.name!,
-                          style:const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.yellow
-                          ),
+                      Text(
+                        fileBook.doctor!.name!,
+                        style:const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.yellow
                         ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 5,),
                   Row(
                     children: [
                       const Text(
-                        'Tên khách hàng  :',
+                        'Ngày giờ khám :',
                         style: TextStyle(
                             fontSize: 16,
                             color: Colors.white
                         ),
                       ),
                       const SizedBox(width: 10,),
-                        Text(
-                          fileBook.datetime!,
-                          style:const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.yellow
-                          ),
+                      Text(
+                        fileBook.datetime!,
+                        style:const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.yellow
                         ),
+                      ),
                     ],
                   ),
 

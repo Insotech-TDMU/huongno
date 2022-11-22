@@ -30,9 +30,6 @@ class AuthenticationSuccess extends AuthenticationState {
   List<Object> get props => [userData];
 }
 
-class LogOutSuccess extends AuthenticationState {
-  const LogOutSuccess();
-}
 
 class RegisterSuccess extends AuthenticationState {
   const RegisterSuccess();

@@ -12,6 +12,8 @@ import 'package:huongno/widgets/label_text_field.dart';
 import 'package:huongno/widgets/loading_page.dart';
 import 'package:huongno/widgets/master_layout.dart';
 
+import '../constant/api_mapping.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -21,14 +23,31 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
 
-
+  Widget page = const LoadingPage();
+  final storage = const FlutterSecureStorage();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   bool _showPassword = true;
   final _formKey = GlobalKey<FormState>();
 
+  @override
+  void initState() {
 
-
+    super.initState();
+    checkLogin();
+  }
+  void checkLogin() async {
+    String token = await AppStorage.getUserToken();
+    if (token == null) {
+      setState(() {
+        page = const LoginPage();
+      });
+    } else {
+      setState(() {
+        page = const HomePage();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
                 AppDialog.show(
                   alertContext,
                   title: 'Lỗi',
-                  content: 'Đã có lỗi xảy ra ',
+                  content: state.errorMessage,
                   primaryButtonTitle: 'Đồng ý',
                   onPrimaryTap: () {
                     Navigator.pop(context);

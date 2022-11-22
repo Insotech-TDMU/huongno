@@ -65,16 +65,14 @@ class CameraOverlay extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Chụp ảnh CCCD/CMND',
+                    'Chụp ảnh hồ sơ bệnh',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: AppFontSize.extraLarge,
                     ),
                   ),
                   const Text(
-                    'Vui lòng chụp ảnh mặt trước và sau căn cước công dân hoặc chứng minh thư nhân dân '
-                        'để OSIN có thể xác minh thông tin mà bạn đăng ký. Hình ảnh CCCD và CMND không hợp lệ '
-                        'hồ sơ đăng ký của bạn sẽ không được duyệt.',
+                    'Vui lòng canh chỉnh đúng tỉ lệ màn hình! Cảm ơn ạ ',
                     style: TextStyle(
                       color: Colors.white,
                     ),
@@ -152,15 +150,15 @@ class CameraOverlay extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
                   Text(
-                    'Chụp hình ảnh cá nhân',
+                    'Chụp hình hồ sơ bệnh',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: AppFontSize.extraLarge,
                     ),
                   ),
                   Text(
-                    'Vui lòng chụp ảnh cá nhân, ảnh phải rõ nét và trùng khớp với hình ảnh trên CCCD hoặc CMND. '
-                        'nếu không trùng khớp, hồ sơ của bạn có thể bị huỷ bỏ.',
+                    'Vui lòng chụp ảnh phải rõ nét và trùng khớp với Hồ sơ bệnh. '
+                        'nếu không trùng khớp, trách nhiệm thuộc về bác sĩ',
                     style: TextStyle(
                       color: Colors.white,
                     ),
