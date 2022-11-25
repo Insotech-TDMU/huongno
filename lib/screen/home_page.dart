@@ -174,7 +174,7 @@ class _HomePageState extends State<HomePage> {
             Center(
                 child:InkWell(
                   onTap: (){
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const DetailCheckoutPage()));
+                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => const DetailCheckoutPage()));
                   },
                   child:  Container(
                     // height: MediaQuery.of(context).size.height * 1 / 10,

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:huongno/constant/app_colors.dart';
 import 'package:huongno/constant/app_font_size.dart';
 import 'package:huongno/model/filebook.dart';
 import 'package:huongno/widgets/master_layout.dart';
@@ -159,39 +160,83 @@ class _DetailFileBookPageState extends State<DetailFileBookPage> {
                                 color: Colors.white
                             ),
                           ),
-                          const SizedBox(height: 20,),
-                            SizedBox(
-                            height: 300,
-                            width: 400,
-                            child: InteractiveViewer(
-                                panEnabled: false, // Set it to false
-                                boundaryMargin:const EdgeInsets.all(100),
-                                minScale: 0.5,
-                                maxScale: 2,
-                                child: Image.network('https://datlich.thuybinhduong.com/storage/Image/${_image1!}',
-                                  width: 200,
-                                  height: 200,
-                                  fit: BoxFit.cover,
-                                )
-                            ) ,
+                    const SizedBox(height: 10,),
+                      InkWell(
+                      onTap: (){},
+                      child: _image1!.isNotEmpty
+                          ?
+                      SizedBox(
+                        height: 400,
+                        width: 400,
+                        child: InteractiveViewer(
+                            panEnabled: false, // Set it to false
+                            boundaryMargin:const EdgeInsets.all(100),
+                            minScale: 0.5,
+                            maxScale: 2,
+                            child: Image.network('https://datlich.thuybinhduong.com/storage/Image/${_image1!}',
+                              width: 200,
+                              height: 300,
+                              fit: BoxFit.cover,
+                            )
+                        ) ,
 
-                          ),
-                          const SizedBox(height: 5,),
-                          SizedBox(
-                            height: 300,
-                            width: 400,
-                            child: InteractiveViewer(
-                                panEnabled: false, // Set it to false
-                                boundaryMargin: EdgeInsets.all(100),
-                                minScale: 0.5,
-                                maxScale: 2,
-                                child: Image.network('https://datlich.thuybinhduong.com/storage/Image/${_image2!}',
-                                  width: 200,
-                                  height: 200,
-                                  fit: BoxFit.cover,
-                                )
-                            ),
+                      )
+                          : const Text(
+                        '',
+                        style: TextStyle(
+                          fontSize: AppFontSize.medium,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white
+                        ),
+                      )
+                    ),
 
+                          // const SizedBox(height: 20,),
+                          //   SizedBox(
+                          //   height: 300,
+                          //   width: 400,
+                          //   child: InteractiveViewer(
+                          //       panEnabled: false, // Set it to false
+                          //       boundaryMargin:const EdgeInsets.all(100),
+                          //       minScale: 0.5,
+                          //       maxScale: 2,
+                          //       child: Image.network('https://datlich.thuybinhduong.com/storage/Image/${_image1!}',
+                          //         width: 200,
+                          //         height: 200,
+                          //         fit: BoxFit.cover,
+                          //       )
+                          //   ) ,
+                          //
+                          // ),
+                          const SizedBox(height: 10,),
+                          InkWell(
+                              onTap: (){},
+                              child: _image2!.isNotEmpty
+                                  ?
+                              SizedBox(
+                                height: 400,
+                                width: 400,
+                                child: InteractiveViewer(
+                                    panEnabled: false, // Set it to false
+                                    boundaryMargin:const EdgeInsets.all(100),
+                                    minScale: 0.5,
+                                    maxScale: 2,
+                                    child: Image.network('https://datlich.thuybinhduong.com/storage/Image/${_image2!}',
+                                      width: 200,
+                                      height: 300,
+                                      fit: BoxFit.cover,
+                                    )
+                                ) ,
+
+                              )
+                                  : const Text(
+                                '',
+                                style: TextStyle(
+                                    fontSize: AppFontSize.medium,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white
+                                ),
+                              )
                           ),
 
                         ],

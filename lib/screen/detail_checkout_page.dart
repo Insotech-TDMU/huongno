@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:huongno/widgets/master_layout.dart';
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+
 
 class DetailCheckoutPage extends StatefulWidget {
   const DetailCheckoutPage({Key? key}) : super(key: key);
@@ -10,11 +9,60 @@ class DetailCheckoutPage extends StatefulWidget {
 }
 
 class _DetailCheckoutPageState extends State<DetailCheckoutPage> {
+
   @override
   Widget build(BuildContext context) {
-    return MasterLayout(
-      title: Text('Bảng giá dịch vụ'.toUpperCase()),
-      body:  SfPdfViewer.network('https://datlich.thuybinhduong.com/storage/BangGiaDichVu.pdf'),
+    return  Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(
+                height: 400,
+                width: 400,
+                child: InteractiveViewer(
+                  panEnabled: false, // Set it to false
+                  boundaryMargin:const EdgeInsets.all(100),
+                  minScale: 0.5,
+                  maxScale: 2,
+                  child: Image.asset('assets/images/1.png'),
+                )
+            ) ,
+            SizedBox(
+                height: 400,
+                width: 400,
+                child: InteractiveViewer(
+                  panEnabled: false, // Set it to false
+                  boundaryMargin:const EdgeInsets.all(100),
+                  minScale: 0.5,
+                  maxScale: 2,
+                  child: Image.asset('assets/images/2.png'),
+                )
+            ) ,
+            SizedBox(
+                height: 400,
+                width: 400,
+                child: InteractiveViewer(
+                  panEnabled: false, // Set it to false
+                  boundaryMargin:const EdgeInsets.all(100),
+                  minScale: 0.5,
+                  maxScale: 2,
+                  child: Image.asset('assets/images/3.png'),
+                )
+            ) ,
+            SizedBox(
+                height: 400,
+                width: 400,
+                child: InteractiveViewer(
+                  panEnabled: false, // Set it to false
+                  boundaryMargin:const EdgeInsets.all(100),
+                  minScale: 0.5,
+                  maxScale: 2,
+                  child: Image.asset('assets/images/4.png'),
+                )
+            ) ,
+          ],
+        ),
+      )
     );
   }
 }
